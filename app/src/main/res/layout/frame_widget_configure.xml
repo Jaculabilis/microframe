@@ -18,9 +18,11 @@
         android:id="@+id/previewImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:maxHeight="300dp"
+        android:adjustViewBounds="true"
         android:layout_marginBottom="8dp"
         android:layout_gravity="center_horizontal"
-        app:srcCompat="@android:drawable/ic_menu_gallery"
+        android:src="@drawable/example_appwidget_preview"
         tools:ignore="ContentDescription" />
 
     <Button

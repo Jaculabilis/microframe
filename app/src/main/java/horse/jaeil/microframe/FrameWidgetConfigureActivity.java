@@ -5,10 +5,16 @@ import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 /**
  * The configuration screen for the {@link FrameWidget FrameWidget} AppWidget.
@@ -17,6 +23,7 @@ public class FrameWidgetConfigureActivity extends Activity {
 
 //    private static final String PREFS_NAME = "horse.jaeil.microframe.FrameWidget";
 //    private static final String PREF_PREFIX_KEY = "appwidget_";
+    private static final String TAG = "FrameWidgetConfigure";
     private static final int REQUEST_IMAGE_GET = 1;
     int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     View.OnClickListener mSelectClickListener = new View.OnClickListener() {
@@ -30,8 +37,9 @@ public class FrameWidgetConfigureActivity extends Activity {
                     .setType("image/*");
             if (intent.resolveActivity(context.getPackageManager()) != null) {
                 startActivityForResult(intent, REQUEST_IMAGE_GET);
+                Log.d(TAG, "Started selector activity");
             }
-//
+
 //            // When the button is clicked, store the string locally
 //            String widgetText = mAppWidgetText.getText().toString();
 //            saveTitlePref(context, mAppWidgetId, widgetText);
@@ -57,13 +65,29 @@ public class FrameWidgetConfigureActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d(TAG, "Received Activity result");
+
         if (requestCode == REQUEST_IMAGE_GET && resultCode == RESULT_OK) {
-            Bitmap thumbnail = data.getParcelableExtra("data");
+//            Bitmap thumbnail = data.getParcelableExtra("data");
             Uri fullPhotoUri = data.getData();
 
-            // Set the preview image
+            Log.i(TAG, fullPhotoUri.toString());
+
+            Drawable drawable;
+            try {
+                InputStream inputStream = getContentResolver().openInputStream(fullPhotoUri);
+                drawable = Drawable.createFromStream(inputStream, fullPhotoUri.toString());
+            } catch (FileNotFoundException e) {
+                Log.e(TAG, "Selected image was not found! Now it's going to crash...");
+                drawable = null;
+            }
+
             ImageView preview = (ImageView) findViewById(R.id.previewImageView);
-            preview.setImageBitmap(thumbnail);
+//            Drawable drawable = new BitmapDrawable(getResources(), thumbnail);
+//            drawable = Drawable.createFromPath(fullPhotoUri.getPath());
+            preview.setImageDrawable(drawable);
+
+            Log.d(TAG, "Set preview image");
         }
     }
 
