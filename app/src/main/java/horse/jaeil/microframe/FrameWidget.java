@@ -14,10 +14,10 @@ public class FrameWidget extends AppWidgetProvider {
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
 
-        CharSequence widgetText = FrameWidgetConfigureActivity.loadTitlePref(context, appWidgetId);
+//        CharSequence widgetText = FrameWidgetConfigureActivity.loadTitlePref(context, appWidgetId);
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.frame_widget);
-        views.setTextViewText(R.id.appwidget_text, widgetText);
+//        views.setTextViewText(R.id.appwidget_text, widgetText);
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
@@ -35,7 +35,7 @@ public class FrameWidget extends AppWidgetProvider {
     public void onDeleted(Context context, int[] appWidgetIds) {
         // When the user deletes the widget, delete the preference associated with it.
         for (int appWidgetId : appWidgetIds) {
-            FrameWidgetConfigureActivity.deleteTitlePref(context, appWidgetId);
+//            FrameWidgetConfigureActivity.deleteTitlePref(context, appWidgetId);
         }
     }
 
