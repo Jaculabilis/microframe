@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">MicroFrame</string>
+    <string name="about_text">Version: 0.1\nAuthor: Tim Van Baak</string>
+</resources>
