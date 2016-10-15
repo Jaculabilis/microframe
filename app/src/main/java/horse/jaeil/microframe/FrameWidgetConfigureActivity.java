@@ -4,30 +4,33 @@ import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Color;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
+import android.widget.ImageView;
 
 /**
  * The configuration screen for the {@link FrameWidget FrameWidget} AppWidget.
  */
 public class FrameWidgetConfigureActivity extends Activity {
 
-    private static final String PREFS_NAME = "horse.jaeil.microframe.FrameWidget";
-    private static final String PREF_PREFIX_KEY = "appwidget_";
+//    private static final String PREFS_NAME = "horse.jaeil.microframe.FrameWidget";
+//    private static final String PREF_PREFIX_KEY = "appwidget_";
+    private static final int REQUEST_IMAGE_GET = 1;
     int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
-
     View.OnClickListener mSelectClickListener = new View.OnClickListener() {
         public void onClick(View v) {
+            final Context context = FrameWidgetConfigureActivity.this;
 
-            // Test function: change background color
-            Button selectButton = (Button) findViewById(R.id.select_image_button);
-            selectButton.setBackgroundColor(Color.GREEN);
-
-//            final Context context = FrameWidgetConfigureActivity.this;
+            // Request an image from any image provider
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT)
+                    .putExtra(Intent.EXTRA_LOCAL_ONLY, true)
+                    .addCategory(Intent.CATEGORY_OPENABLE)
+                    .setType("image/*");
+            if (intent.resolveActivity(context.getPackageManager()) != null) {
+                startActivityForResult(intent, REQUEST_IMAGE_GET);
+            }
 //
 //            // When the button is clicked, store the string locally
 //            String widgetText = mAppWidgetText.getText().toString();
@@ -36,15 +39,8 @@ public class FrameWidgetConfigureActivity extends Activity {
 //            // It is the responsibility of the configuration activity to update the app widget
 //            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
 //            FrameWidget.updateAppWidget(context, appWidgetManager, mAppWidgetId);
-
-//            // Make sure we pass back the original appWidgetId
-//            Intent resultValue = new Intent();
-//            resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId);
-//            setResult(RESULT_OK, resultValue);
-//            finish();
         }
     };
-
     View.OnClickListener mFinishClickListener = new View.OnClickListener() {
         public void onClick(View v) {
             // Make sure we pass back the original appWidgetId
@@ -57,6 +53,18 @@ public class FrameWidgetConfigureActivity extends Activity {
 
     public FrameWidgetConfigureActivity() {
         super();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_GET && resultCode == RESULT_OK) {
+            Bitmap thumbnail = data.getParcelableExtra("data");
+            Uri fullPhotoUri = data.getData();
+
+            // Set the preview image
+            ImageView preview = (ImageView) findViewById(R.id.previewImageView);
+            preview.setImageBitmap(thumbnail);
+        }
     }
 
 //    // Write the prefix to the SharedPreferences object for this widget
