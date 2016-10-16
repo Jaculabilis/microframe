@@ -3,6 +3,8 @@ package horse.jaeil.microframe;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
+import android.net.Uri;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 /**
@@ -10,14 +12,23 @@ import android.widget.RemoteViews;
  * App Widget Configuration implemented in {@link FrameWidgetConfigureActivity FrameWidgetConfigureActivity}
  */
 public class FrameWidget extends AppWidgetProvider {
+    private static final String TAG = "FrameWidget";
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
 
-//        CharSequence widgetText = FrameWidgetConfigureActivity.loadTitlePref(context, appWidgetId);
-        // Construct the RemoteViews object
+        String uriString = FrameWidgetConfigureActivity.loadImgRef(context, appWidgetId);
+        Log.d(TAG, "Widget updating with uriString=" + uriString);
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.frame_widget);
-//        views.setTextViewText(R.id.appwidget_text, widgetText);
+        // Depending on the URI string, set the widget image
+        if (!uriString.equals("")) {
+            Uri uri = Uri.parse(uriString);
+            views
+                    .setImageViewUri(R.id.frameImage, uri);
+        } else {
+            views
+                    .setImageViewResource(R.id.frameImage, R.drawable.frame_default);
+        }
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
@@ -35,7 +46,7 @@ public class FrameWidget extends AppWidgetProvider {
     public void onDeleted(Context context, int[] appWidgetIds) {
         // When the user deletes the widget, delete the preference associated with it.
         for (int appWidgetId : appWidgetIds) {
-//            FrameWidgetConfigureActivity.deleteTitlePref(context, appWidgetId);
+            FrameWidgetConfigureActivity.deleteImgRef(context, appWidgetId);
         }
     }
 

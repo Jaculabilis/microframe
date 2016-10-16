@@ -24,8 +24,14 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:layout_gravity="center_horizontal"
-            android:src="@drawable/example_appwidget_preview"
+            android:src="@drawable/frame_default"
             tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/previewUri"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+            <!--android:visibility="gone"> /-->
 
         <Button
             android:id="@+id/finish_button"
