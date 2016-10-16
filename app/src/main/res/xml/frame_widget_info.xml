@@ -5,7 +5,7 @@
     android:initialLayout="@layout/frame_widget"
     android:minHeight="40dp"
     android:minWidth="40dp"
-    android:previewImage="@drawable/microframe_preview"
+    android:previewImage="@drawable/frame_138"
     android:resizeMode="horizontal|vertical"
-    android:updatePeriodMillis="86400000"
+    android:updatePeriodMillis="0"
     android:widgetCategory="home_screen"></appwidget-provider>
