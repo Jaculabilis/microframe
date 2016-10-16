@@ -18,10 +18,7 @@ public class FrameWidget extends AppWidgetProvider {
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
-
         String uriString = FrameWidgetConfigureActivity.loadImgRef(context, appWidgetId);
-        Log.i(TAG, "Widget updating with uriString = \"" + uriString + "\"");
-
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.frame_widget);
         if (uriString.equals("")) {
             views.setImageViewResource(R.id.frameImage, R.drawable.frame_default);
@@ -31,22 +28,11 @@ public class FrameWidget extends AppWidgetProvider {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
                 views.setImageViewBitmap(R.id.frameImage, bitmap);
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.e(TAG, "Could not load bitmap from URI \"" + uriString + "\"");
+                views.setImageViewResource(R.id.frameImage, R.drawable.frame_default);
             }
-
         }
         appWidgetManager.updateAppWidget(appWidgetId, views);
-
-        // Depending on the URI string, set the widget image
-//        if (!uriString.equals("")) {
-//            Uri uri = Uri.parse(uriString);
-//            Log.i(TAG, "Parsed URI: " + uri.toString());
-//            views
-//                    .setImageViewUri(R.id.frameImage, uri);
-//        } else {
-//            views
-//                    .setImageViewResource(R.id.frameImage, R.drawable.frame_default);
-//        }
     }
 
     @Override
