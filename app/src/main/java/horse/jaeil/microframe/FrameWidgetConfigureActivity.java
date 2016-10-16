@@ -5,8 +5,6 @@ import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,7 +15,6 @@ import android.widget.TextView;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.net.URI;
 
 /**
  * The configuration screen for the {@link FrameWidget FrameWidget} AppWidget.
@@ -50,7 +47,6 @@ public class FrameWidgetConfigureActivity extends Activity {
             // Get the URI of the preview image
             TextView textView = (TextView) findViewById(R.id.previewUri);
             String uriString = textView.getText().toString();
-            Log.i(TAG, "Finish clicked with URI = \"" + uriString + "\"");
 
             // Send an update to the widget so it can load the image
             saveImgRef(context, mAppWidgetId, uriString);
@@ -73,18 +69,14 @@ public class FrameWidgetConfigureActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_GET && resultCode == RESULT_OK) {
             // Parse the URI into a drawable
-            Uri fullPhotoUri = data.getData();
-            Log.i(TAG, "URI selected: \"" + fullPhotoUri + "\"");
-            String uriString = fullPhotoUri.toString();
-            Uri uri = Uri.parse(uriString);
-            Log.i(TAG, "URI reread  : \"" + uri + "\"");
+            Uri uri = data.getData();
             Drawable drawable;
             TextView previewText = (TextView) findViewById(R.id.previewUri);
             try {
                 InputStream inputStream = getContentResolver().openInputStream(uri);
                 drawable = Drawable.createFromStream(inputStream, uri.toString());
                 // If the Drawable was successfully loaded, then store the URI for the widget
-                previewText.setText(uriString);
+                previewText.setText(uri.toString());
             } catch (FileNotFoundException e) {
                 Log.e(TAG, "Selected image not found!");
                 drawable = getResources().getDrawable(R.drawable.frame_default, null);
