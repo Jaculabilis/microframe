@@ -50,7 +50,7 @@ public class FrameWidgetConfigureActivity extends Activity {
             // Get the URI of the preview image
             TextView textView = (TextView) findViewById(R.id.previewUri);
             String uriString = textView.getText().toString();
-            Log.d(TAG, "Finish clicked with URI " + uriString);
+            Log.i(TAG, "Finish clicked with URI = \"" + uriString + "\"");
 
             // Send an update to the widget so it can load the image
             saveImgRef(context, mAppWidgetId, uriString);
@@ -74,14 +74,17 @@ public class FrameWidgetConfigureActivity extends Activity {
         if (requestCode == REQUEST_IMAGE_GET && resultCode == RESULT_OK) {
             // Parse the URI into a drawable
             Uri fullPhotoUri = data.getData();
-            Log.i(TAG, "URI selected: " + fullPhotoUri);
+            Log.i(TAG, "URI selected: \"" + fullPhotoUri + "\"");
+            String uriString = fullPhotoUri.toString();
+            Uri uri = Uri.parse(uriString);
+            Log.i(TAG, "URI reread  : \"" + uri + "\"");
             Drawable drawable;
             TextView previewText = (TextView) findViewById(R.id.previewUri);
             try {
-                InputStream inputStream = getContentResolver().openInputStream(fullPhotoUri);
-                drawable = Drawable.createFromStream(inputStream, fullPhotoUri.toString());
+                InputStream inputStream = getContentResolver().openInputStream(uri);
+                drawable = Drawable.createFromStream(inputStream, uri.toString());
                 // If the Drawable was successfully loaded, then store the URI for the widget
-                previewText.setText(fullPhotoUri.toString());
+                previewText.setText(uriString);
             } catch (FileNotFoundException e) {
                 Log.e(TAG, "Selected image not found!");
                 drawable = getResources().getDrawable(R.drawable.frame_default, null);

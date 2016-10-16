@@ -3,7 +3,9 @@ package horse.jaeil.microframe;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.RemoteViews;
 
@@ -18,20 +20,33 @@ public class FrameWidget extends AppWidgetProvider {
                                 int appWidgetId) {
 
         String uriString = FrameWidgetConfigureActivity.loadImgRef(context, appWidgetId);
-        Log.d(TAG, "Widget updating with uriString=" + uriString);
-        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.frame_widget);
-        // Depending on the URI string, set the widget image
-        if (!uriString.equals("")) {
-            Uri uri = Uri.parse(uriString);
-            views
-                    .setImageViewUri(R.id.frameImage, uri);
-        } else {
-            views
-                    .setImageViewResource(R.id.frameImage, R.drawable.frame_default);
-        }
+        Log.i(TAG, "Widget updating with uriString = \"" + uriString + "\"");
 
-        // Instruct the widget manager to update the widget
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.frame_widget);
+        if (uriString.equals("")) {
+            views.setImageViewResource(R.id.frameImage, R.drawable.frame_default);
+        } else {
+            Uri uri = Uri.parse(uriString);
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
+                views.setImageViewBitmap(R.id.frameImage, bitmap);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
         appWidgetManager.updateAppWidget(appWidgetId, views);
+
+        // Depending on the URI string, set the widget image
+//        if (!uriString.equals("")) {
+//            Uri uri = Uri.parse(uriString);
+//            Log.i(TAG, "Parsed URI: " + uri.toString());
+//            views
+//                    .setImageViewUri(R.id.frameImage, uri);
+//        } else {
+//            views
+//                    .setImageViewResource(R.id.frameImage, R.drawable.frame_default);
+//        }
     }
 
     @Override
